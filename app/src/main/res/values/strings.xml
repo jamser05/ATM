@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">ATM</string>
+    <string name="deposit">Deposit</string>
+    <string name="submit">Submit</string>
+    <string name="withdrawal">Withdrawal</string>
+    <string name="amount">Choose Amount:</string>
+    <string name="balance">See My Balance</string>
+    <string name="my_balance">My Balance:</string>
+    <string name="alert">Alert</string>
+    <string name="unsuccessfulWithdrawal">Withdrawal amount exceeds your current balance.
+        Your balance is</string>
+    <string name="successfulDeposit">Cash has been accepted. Total Amount inserted: $"</string>
+    <string name="successfulWithdrawal">Take your cash: $</string>
+</resources>
