@@ -1,22 +1,28 @@
 package com.example.atm_project
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.atm_project.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var accountBalance = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.tvMyBalance.append(" $$accountBalance")
+
+        binding.tvMyBalance.append(" $${UserSessionData.userBalance}")
 
         binding.btnBalance.setOnClickListener {
             setUpBtnSeeMyBalance()
@@ -29,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         binding.btnDeposit.setOnClickListener {
             setUpDeposit()
         }
-
     }
 
     private fun setUpBtnWithdrawal() {
@@ -44,11 +49,11 @@ class MainActivity : AppCompatActivity() {
             val amount = binding.etUserInput.text.toString()
             val amountAsInt = amount.toIntOrNull() ?: 0
 
-            if(amountAsInt > accountBalance) {
+            if(amountAsInt > UserSessionData.userBalance) {
                 val alertDialog = AlertDialog.Builder(this)
                     .setTitle(getString(R.string.alert))
                     //add dollar sign
-                    .setMessage(getString(R.string.unsuccessfulWithdrawal) + " $$accountBalance")
+                    .setMessage(getString(R.string.unsuccessfulWithdrawal) + " $${UserSessionData.userBalance}")
                     .create()
                 alertDialog.show()
             } else {
@@ -59,24 +64,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun submitTransaction(amountAsInt: Int, transactionOption: TransactionOptions) {
+    private fun submitTransaction(transactionAmount: Int, transactionOption: TransactionOptions) {
         when(transactionOption) {
             TransactionOptions.DEPOSIT -> {
-                accountBalance += amountAsInt
-                binding.tvMyBalance.text = getString(R.string.my_balance) + " $$accountBalance"
+                UserSessionData.userBalance += transactionAmount
+                binding.tvMyBalance.text = getString(R.string.my_balance) + " $${UserSessionData.userBalance}"
                 val alertDialog = AlertDialog.Builder(this)
                     .setTitle(getString(R.string.alert))
-                    .setMessage(getString(R.string.successfulDeposit) + "$amountAsInt")
+                    .setMessage(getString(R.string.successfulDeposit) + "$transactionAmount")
                     .create()
                 alertDialog.show()
                 makeUserInputAndAmountVisible()
             }
             TransactionOptions.WITHDRAWAL -> {
-                accountBalance -= amountAsInt
-                binding.tvMyBalance.text = getString(R.string.my_balance) + " $$accountBalance"
+                UserSessionData.userBalance -= transactionAmount
+                binding.tvMyBalance.text = getString(R.string.my_balance) + " $${UserSessionData.userBalance}"
                 val alertDialog = AlertDialog.Builder(this)
                     .setTitle(getString(R.string.alert))
-                    .setMessage(getString(R.string.successfulWithdrawal) + "$amountAsInt")
+                    .setMessage(getString(R.string.successfulWithdrawal) + "$transactionAmount")
                     .create()
                 alertDialog.show()
                 makeUserInputAndAmountVisible()
@@ -117,4 +122,6 @@ class MainActivity : AppCompatActivity() {
 
         makeBalanceVisible()
     }
+
+
 }
